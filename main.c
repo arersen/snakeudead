@@ -226,6 +226,7 @@ void* draw_map_thread(){
     }
 }
 int main(){
+    atexit(kill);
     pthread_t pthread;
     snake.length = 3;
     init_map();
@@ -239,6 +240,8 @@ int main(){
     for(;;){
         snake.direction = _getch();
     }
+
+  return 0;
 
 
 }
