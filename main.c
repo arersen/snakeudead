@@ -256,7 +256,7 @@ void* draw_map_thread(){
     }
 }
 int main(){
-    atexit(kill);
+    atexit(kill); //Prevention of cunning players
     pthread_t pthread;
     snake.length = 3;
     init_map();
