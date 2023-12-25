@@ -1,5 +1,4 @@
 #include <windows.h>
-#include <string.h>
 #include <stdio.h>
 #include <conio.h>
 #include <pthread.h>
@@ -265,17 +264,20 @@ void* draw_map_thread(){
 
 void start(){
     atexit(kill); //Prevention of cunning players
+
     snake.score = 0;
     set_title();
-    pthread_t pthread;
+
     snake.length = 3;
+
     init_map();
     generate_food();
-
 
     snake.x = 8;
     snake.y = 8;
     snake.direction = _getch();
+
+    pthread_t pthread;
     pthread_create(&pthread, NULL, draw_map_thread, NULL);
 
     for(;;){
