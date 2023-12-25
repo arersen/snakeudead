@@ -131,8 +131,8 @@ void generate_food(){
 
     for(;;){
 
-        x = rand() % 15;
-        y = rand() % 15;
+        x = rand() % HEIGHT - 1;
+        y = rand() % HEIGHT - 1;
 
         if(map[y][x] != '@'){
             break;
