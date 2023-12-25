@@ -51,11 +51,10 @@ char map[HEIGHT][HEIGHT + 1];
 
 
 typedef struct {
-    int x, y, length, x_dir, y_dir, alive;
+    int x, y, length, x_dir, y_dir, alive, score;
     int tail[HEIGHT * HEIGHT][2];
     char direction;
 } Snake;
-
 Snake snake;
 
 
@@ -143,6 +142,12 @@ void generate_food(){
     map[y][x] = '*';
 
 }
+
+void set_title(){
+    char title[256];
+    sprintf(title, "%d", snake.score);
+    SetConsoleTitle(title);
+}
 void update_map(int x, int y){
     /*
      * The procedure that updates the coordinates of the snake, its tail, and sets them on the map.
@@ -154,6 +159,8 @@ void update_map(int x, int y){
     if(map[y][x] == '*'){
 
         snake.length+=2;
+        snake.score++;
+        set_title();
         map[snake.y][snake.x] = '@';
         generate_food();
     } else map[snake.y][snake.x] = '@';
@@ -255,8 +262,11 @@ void* draw_map_thread(){
         system("cls");
     }
 }
-int main(){
+
+void start(){
     atexit(kill); //Prevention of cunning players
+    snake.score = 0;
+    set_title();
     pthread_t pthread;
     snake.length = 3;
     init_map();
@@ -267,11 +277,13 @@ int main(){
     snake.y = 8;
     snake.direction = _getch();
     pthread_create(&pthread, NULL, draw_map_thread, NULL);
+
     for(;;){
         snake.direction = _getch();
     }
 
-
+}
+int main(){
+    start();
     return 0;
-
 }
