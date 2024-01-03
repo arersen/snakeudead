@@ -201,6 +201,12 @@ void check_collision(int x, int y){
         kill();
     }
 }
+
+void change_direction(int x, int y){
+  snake.x_dir = x;
+  snake.y_dir = y;
+
+}
 void check_direction(){
     /*
      * Checking which key was pressed and indicating the direction.
@@ -211,8 +217,7 @@ void check_direction(){
                 snake.direction = 's';
                 break;
             }
-            snake.y_dir = -1;
-            snake.x_dir = 0;
+            change_direction(0, -1);
             break;
 
         case 's':
@@ -220,8 +225,8 @@ void check_direction(){
                 snake.direction = 'w';
                 break;
             }
-            snake.y_dir = 1;
-            snake.x_dir = 0;
+
+            change_direction(0, 1);
             break;
 
         case 'a':
@@ -229,8 +234,7 @@ void check_direction(){
                 snake.direction = 'd';
                 break;
             }
-            snake.x_dir = -1;
-            snake.y_dir = 0;
+            change_direction(-1, 0);
             break;
 
         case 'd':
@@ -238,8 +242,7 @@ void check_direction(){
                 snake.direction = 'a';
                 break;
             }
-            snake.x_dir = 1;
-            snake.y_dir = 0;
+            change_direction(1, 0);
             break;
     }
 }
