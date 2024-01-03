@@ -203,6 +203,12 @@ void check_collision(int x, int y){
 }
 
 void change_direction(int x, int y){
+  if(x == 1 && snake.x_dir == -1 || x == -1 && snake.x_dir == 1)
+    return;
+  
+
+  if (y == 1 && snake.y_dir == -1 || y == -1 && snake.y_dir == 1) 
+    return;
   snake.x_dir = x;
   snake.y_dir = y;
 
@@ -213,35 +219,18 @@ void check_direction(){
      */
     switch(snake.direction){
         case 'w':
-            if(snake.y_dir == 1){
-                snake.direction = 's';
-                break;
-            }
             change_direction(0, -1);
             break;
 
         case 's':
-            if(snake.y_dir == -1){
-                snake.direction = 'w';
-                break;
-            }
-
             change_direction(0, 1);
             break;
 
         case 'a':
-            if(snake.x_dir == 1){
-                snake.direction = 'd';
-                break;
-            }
             change_direction(-1, 0);
             break;
 
         case 'd':
-            if(snake.x_dir == -1){
-                snake.direction = 'a';
-                break;
-            }
             change_direction(1, 0);
             break;
     }
