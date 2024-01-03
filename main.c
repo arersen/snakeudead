@@ -258,15 +258,15 @@ void start(){
     atexit(kill); //Prevention of cunning players
 
     snake.score = 0;
-    set_title();
+    set_title(); 
 
-    snake.length = 3;
+    snake.length = 3; // Set base snake length
 
     init_map();
     generate_food();
 
-    snake.x = 8;
-    snake.y = 8;
+    snake.x = 8; // Set start pos snake
+    snake.y = 8; //
     snake.direction = _getch();
 
     pthread_t pthread;
