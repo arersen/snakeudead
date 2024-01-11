@@ -198,11 +198,21 @@ void check_collision(int x, int y){
      */
     if (map[y][x] == '@'){
         snake.alive = 0;
+        system("cls");
+        Sleep(2000);
+        char message[12] = "YOU DEAD...";
+        for(int i = 0; i < 12; i++){
+          printf("%c", message[i]);
+          Sleep(777);
+        }
         kill();
     }
 }
 
 void change_direction(int x, int y){
+  /*
+  * Check to ensure that the snake cannot have a direction opposite to itself.
+  */
   if(x == 1 && snake.x_dir == -1 || x == -1 && snake.x_dir == 1)
     return;
   
